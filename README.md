@@ -3,9 +3,8 @@ Status: Broken
 A GAN model that takes several factors as inputs and generates a youtube thumbnail
 
 To Use:
-1. unzip USvideos.csv into the same directory as ipy notebook
-2. create "data" directory
+1. create "data" directory
 3. create "images" directory
-4. install requirements with `pip install -r requirements.txt`
-5. run `python download_images.py`
+4. install requirements with `conda install --file packagelist.txt`
+5. run `python download_thumbnails_kr.py`
 6. train the model with `python model.py`
