@@ -5,9 +5,12 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
 import numpy as np
 
+import tensorflow as tf
+
+from keras import initializers
 from keras.layers import (Activation, BatchNormalization, Dense, Dropout,
-                          Flatten, Input, Reshape, ZeroPadding2D)
-from keras.layers.advanced_activations import LeakyReLU
+                          Flatten, Input, Reshape, ZeroPadding2D, Conv2DTranspose)
+from keras.layers.advanced_activations import LeakyReLU, ReLU
 from keras.layers.convolutional import Conv2D, UpSampling2D
 from keras.models import Model, Sequential
 from keras.optimizers import Adam
@@ -76,27 +79,36 @@ class DCGAN():
     def _build_generator(self):
 
         generator = Sequential()
+        init = initializers.RandomNormal(stddev=1)
 
-        generator.add(Dense(128 * 15 * 20, activation="relu",
-                            input_dim=self.latent_dim))
-        generator.add(Reshape((15, 20, 128)))
-        generator.add(UpSampling2D(size=(3, 3)))
-        generator.add(Conv2D(128, kernel_size=3, padding="same"))
-        generator.add(BatchNormalization(momentum=0.8))
-        generator.add(Activation("relu"))
-        generator.add(UpSampling2D())
-        generator.add(Conv2D(64, kernel_size=3, padding="same"))
-        generator.add(BatchNormalization(momentum=0.8))
-        generator.add(Activation("relu"))
-        generator.add(Conv2D(self.channels, kernel_size=3, padding="same"))
-        generator.add(Activation("tanh"))
+        # FC layer: 5*5*256
+        generator.add(Dense(5*5*256, input_shape=(self.latent_dim,),
+                            kernel_initializer=init))
+        generator.add(Reshape((5, 5, 256)))
+        generator.add(BatchNormalization())
+        generator.add(ReLU())
+
+        # Conv 1: 15x20x128
+        generator.add(Conv2DTranspose(
+            128, kernel_size=5, strides=(3, 4), padding='same'))
+        generator.add(BatchNormalization())
+        generator.add(ReLU())
+        assert generator.output_shape == (None, 15, 20, 128)
+
+        # Conv 2: 45*60*64
+        generator.add(Conv2DTranspose(
+            64, kernel_size=5, strides=3, padding='same'))
+        generator.add(BatchNormalization())
+        generator.add(ReLU())
+        assert generator.output_shape == (None, 45, 60, 64)
+
+        # Conv 3: 90x120x3
+        generator.add(Conv2DTranspose(3, kernel_size=3, strides=2, padding='same',
+                                      activation='tanh'))
+        assert generator.output_shape == (None, 90, 120, 3)
 
         generator.summary()
-
-        noise = Input(shape=(self.latent_dim,))
-        img = generator(noise)
-
-        return Model(noise, img)
+        return generator
 
     def _build_discriminator(self):
 
@@ -149,6 +161,19 @@ class DCGAN():
             os.makedirs(path)
             print(f'Directory {path} is created!')
 
+    def generator_loss(self, fake_output):
+        cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+        return cross_entropy(tf.ones_like(fake_output), fake_output)
+
+    def discriminator_loss(self, real_output, fake_output):
+        cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+
+        real_loss = cross_entropy(tf.ones_like(real_output), real_output)
+        fake_loss = cross_entropy(tf.zeros_like(fake_output), fake_output)
+        total_loss = real_loss + fake_loss
+
+        return total_loss
+
     def train(self, cat_id, epochs, batch_size=128, save_interval=50):
         # Check whether Directory exists
         self._check_dir(f'model/{cat_id}')
@@ -176,7 +201,7 @@ class DCGAN():
             imgs = X_train[idx]
 
             # Sample noise and generate a batch of new images
-            noise = np.random.normal(0, 1, (batch_size, self.latent_dim))
+            noise = np.random.normal(0, 100, (batch_size, self.latent_dim))
             gen_imgs = self.generator.predict(noise)
 
             # Train the discriminator (real classified as ones and generated as zeros)
@@ -189,7 +214,7 @@ class DCGAN():
             # ---------------------
             # Train Generator weights
             self.discriminator.trainable = False
-            
+
             # Train the generator (wants discriminator to mistake images as real)
             g_loss = self.combined.train_on_batch(noise, valid)
 
@@ -239,9 +264,10 @@ class DCGAN():
 
 
 if __name__ == '__main__':
-    # dcgan = DCGAN()
-    # dcgan.train(cat_id="Pets&Animals", epochs=1000, batch_size=128, save_interval=200)
-    for category in CATEGORY_DICT.values():
-        dcgan = DCGAN()
-        dcgan.train(cat_id=category, epochs=1000,
-                    batch_size=128, save_interval=200)
+    dcgan = DCGAN()
+    dcgan.train(cat_id="Pets&Animals", epochs=10000,
+                batch_size=128, save_interval=200)
+    # for category in CATEGORY_DICT.values():
+    #     dcgan = DCGAN()
+    #     dcgan.train(cat_id=category, epochs=1000,
+    #                 batch_size=128, save_interval=200)
