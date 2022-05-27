@@ -1,6 +1,8 @@
 .vscode
 venv
-images/
+images*
+fig/
+Youtube-crawling/
 model/
 data/
 
