@@ -1,4 +1,9 @@
 # YTGAN: YouTube thumbnail GANerator
+---
+|Final Report | https://docs.google.com/document/d/1qYt5e0qHzGD1t92SkOKZ5pQtOtsITWwEfoodB8Gf288/edit?usp=sharing|
+|:---:|:---|
+|**PPT**         | https://docs.google.com/presentation/d/1pspdktUKwSx3tf10Y9hvMtDlkbq1szGpZ3Xk47uVWtQ/edit?usp=sharing|
+---
 ### Generated Images By Final Model During Training
 |Autos&Vehicles|News&Politics|
 |------|---|
