@@ -1,10 +1,9 @@
 # YTGAN: YouTube thumbnail GANerator
 ---
-## Introduction
-KAIST 2022 Spring
-CS376 Machine Learning
-Final Project - Youtube GANerator
-by Woojin Lee, Dongwon Choi, Jeongha Seo, Sihyun Ahn
+## Introduction  
+### KAIST CS376 Machine Learning  
+### Final Project - Youtube GANerator
+#### by Woojin Lee, Dongwon Choi, Jeongha Seo, Sihyun Ahn
 ---
 |Final Report | https://docs.google.com/document/d/1qYt5e0qHzGD1t92SkOKZ5pQtOtsITWwEfoodB8Gf288/edit?usp=sharing|
 |:---:|:---|
