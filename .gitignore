@@ -5,7 +5,8 @@ fig/
 Youtube-crawling/
 model/
 data/
-
+2022_*
+results/
 
 
 # Byte-compiled / optimized / DLL files
