@@ -1,8 +1,8 @@
-
+# YTGAN: YouTube thumbnail GANerator
 ### Generated Images By Final Model During Training
 |Autos&Vehicles|News&Politics|
 |------|---|
-|![](/readme_img/A%26V4_animation.gif)|model4 n/p 0002|
+|![](/readme_img/A%26V4_animation.gif)|![](/readme_img/animation.gif)|
 ---
 
 ## Adjust Model
@@ -141,6 +141,9 @@
 |![](/readme_img/A%26V4_G%26D_Loss.png)|![](/readme_img/A%26V4_0001_G%26D_Loss.png)|
 |![](/readme_img/A%26V4_G%26D_score.png)|![](/readme_img/A%26V4_0001_G%26D_score.png)|
 ---
-# The Best Model of Each Categories
-|Autos&Vehicles||
-|:---:|:---:|
+#### Autos&Vehicles
+![](/readme_img/A%26V_fake_real3.png) 
+#### Film&Animation
+![](/readme_img/F%26A_fake_real3.png) 
+#### News&Politics
+![](/readme_img/N%26P_fake_real3.png) 
